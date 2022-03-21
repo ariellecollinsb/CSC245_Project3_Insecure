@@ -47,23 +47,26 @@ public class CSC245_Project3_Insecure {
 
 	// Java Maps are used with many API interactions. OpenWeatherMap also uses Java Maps.
 	public static Map<String, Object> jsonToMap(String str) {
-		Map<String, Object> map = new Gson().fromJson(
+		return new Gson().fromJson(
 				str, new TypeToken<HashMap<String, Object>>() {}.getType()
-				);
-		return map;
+		);
 	}
 
 	public static String getTempForCity (String cityString, String api_key) {
 		String urlString = "http://api.openweathermap.org/data/2.5/weather?q=" +
 				cityString + "&appid=" + api_key + "&units=imperial";
+		BufferedReader rd = null;
 		try {
 			StringBuilder result = new StringBuilder();
 			URL url = new URL(urlString);
 			URLConnection conn = url.openConnection();
-			BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+			rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+
 			String line;
-			while ((line = rd.readLine()) != null)
-				result .append(line);
+			//braces are placed to specify the code block included in this loop
+			while ((line = rd.readLine()) != null) {
+				result.append(line);
+			}
 			System.out.println(result);
 
 			Map<String, Object > respMap = jsonToMap (result.toString());
@@ -74,24 +77,44 @@ public class CSC245_Project3_Insecure {
 		} catch (IOException e){
 			System.out.println(e.getMessage());
 			return "Temp not available (API problem?)";
+			//'Finally' added to ensure proper cleanup at program termination
+		} finally {
+			try {
+				if (rd != null) {
+					rd.close();
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 
 	}
 
 	public static void main(String[] args) {
-		String owm = "",		// Include the API key here
-				LOCATION = "Castle Rock, US";
-		String urlString = "http://api.openweathermap.org/data/2.5/weather?q=" + LOCATION +
-				"&appid=" + owm + "&units=imperial";
+		//Changed variable name to make it more meaningful
+		//environment variables are used here to store the API key securely
+		//Original statement removed and variables declared independently according to industry standards
+		String API_Key = System.getenv("API_KEY");
+		String LOCATION = "Castle Rock, US"; //Location has been put into its own statement
+
+
+		//String url string is commented out because it is unused
+		/*String urlString = "http://api.openweathermap.org/data/2.5/weather?q=" + LOCATION +
+				"&appid=" + owm + "&units=imperial";  */
 
 		// The following line is out of scope for mitigation and can be ignored.
 //		System.out.println("URL invoked to get temperature data=" + urlString);
 
-		for (int i=0;i<10;i++);
-			System.out.println("Current temperature in " + LOCATION +" is: "
-					+ getTempForCity(LOCATION,owm) + " degrees.");
+		/*semicolon that appeared immediately after for statement is removed
+		//braces are used to group body of statement into a functional code block
+		for loop is wasteful and unnecessary so I am removing it.*/
+		//for (int i=0;i<10;i++)
 
-		urlString = "";
+			System.out.println("Current temperature in " + LOCATION + " is: "
+					+ getTempForCity(LOCATION, API_Key) + " degrees.");
+
+		//There is no need to set urlstring to empty string to help the garbage collector
+		// urlString = "";
 
 	}
 
