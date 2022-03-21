@@ -46,6 +46,7 @@ import com.google.gson.reflect.*;
 public class CSC245_Project3_Insecure {
 
 	// Java Maps are used with many API interactions. OpenWeatherMap also uses Java Maps.
+	//Map statement edited to remove redundancy
 	public static Map<String, Object> jsonToMap(String str) {
 		return new Gson().fromJson(
 				str, new TypeToken<HashMap<String, Object>>() {}.getType()
@@ -63,7 +64,7 @@ public class CSC245_Project3_Insecure {
 			rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 
 			String line;
-			//braces are placed to specify the code block included in this loop
+			//braces are placed to specify the code block included in this while loop
 			while ((line = rd.readLine()) != null) {
 				result.append(line);
 			}
@@ -80,6 +81,7 @@ public class CSC245_Project3_Insecure {
 			//'Finally' added to ensure proper cleanup at program termination
 		} finally {
 			try {
+				//rd.close() wrapped in if statement to prevent NullPointerException
 				if (rd != null) {
 					rd.close();
 				}
@@ -87,7 +89,6 @@ public class CSC245_Project3_Insecure {
 				e.printStackTrace();
 			}
 		}
-
 	}
 
 	public static void main(String[] args) {
@@ -96,25 +97,9 @@ public class CSC245_Project3_Insecure {
 		//Original statement removed and variables declared independently according to industry standards
 		String API_Key = System.getenv("API_KEY");
 		String LOCATION = "Castle Rock, US"; //Location has been put into its own statement
-
-
-		//String url string is commented out because it is unused
-		/*String urlString = "http://api.openweathermap.org/data/2.5/weather?q=" + LOCATION +
-				"&appid=" + owm + "&units=imperial";  */
-
-		// The following line is out of scope for mitigation and can be ignored.
-//		System.out.println("URL invoked to get temperature data=" + urlString);
-
-		/*semicolon that appeared immediately after for statement is removed
-		//braces are used to group body of statement into a functional code block
-		for loop is wasteful and unnecessary so I am removing it.*/
-		//for (int i=0;i<10;i++)
-
+            //for loop removed
 			System.out.println("Current temperature in " + LOCATION + " is: "
 					+ getTempForCity(LOCATION, API_Key) + " degrees.");
-
-		//There is no need to set urlstring to empty string to help the garbage collector
-		// urlString = "";
 
 	}
 
